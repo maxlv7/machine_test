@@ -45,7 +45,7 @@ class Net(nn.Module):
 if __name__ == '__main__':
 
     dataset_train = MnistData()
-    dataloader = DataLoader(dataset=dataset_train, batch_size=1, shuffle=True, num_workers=2)
+    dataloader = DataLoader(dataset=dataset_train, batch_size=32, shuffle=True, num_workers=2)
 
     net = Net()
     # 学习率
@@ -55,26 +55,28 @@ if __name__ == '__main__':
     # 优化器
     optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
 
-    # 设置为训练模式
-    net.train()
-    for id, (train, label) in enumerate(dataloader, 0):
-        y_pred = net(train)
+    # 进行3轮
+    for epoch in range(1, 4):
+        # 设置为训练模式
+        net.train()
+        for batch_id, (train, label) in enumerate(dataloader, 0):
+            y_pred = net(train)
 
-        # 计算损失
-        loss = criterion(y_pred, label)
+            # 计算损失
+            loss = criterion(y_pred, label)
 
-        # 在反向传播之前，使用optimizer将它要更新的所有张量的梯度清零(这些张量是模型可学习的权重)
-        optimizer.zero_grad()
+            # 在反向传播之前，使用optimizer将它要更新的所有张量的梯度清零(这些张量是模型可学习的权重)
+            optimizer.zero_grad()
 
-        # 反向传播：根据模型的参数计算loss的梯度
-        loss.backward()
+            # 反向传播：根据模型的参数计算loss的梯度
+            loss.backward()
 
-        # 调用Optimizer的step函数使它所有参数更新
-        optimizer.step()
+            # 调用Optimizer的step函数使它所有参数更新
+            optimizer.step()
 
-        # 每100个batch打印一次
-        if id % 100 == 0:
-            print(f"当前训练的进程是:{id * 32}/60000 loss is {loss:.4f}")
+            # 每20个batch打印一次
+            if batch_id % 20 == 0:
+                print(f"当前是第[{epoch}]轮 >>>({batch_id * len(train)}/{len(dataloader.dataset)}) 当前loss是[{loss:.4f}]")
 
     torch.save(net.state_dict(), "model.pth")
     print("成功保存模型...")

@@ -29,6 +29,6 @@ if __name__ == '__main__':
 
     test_loss /= len(data_loader.dataset)
 
-    print('\n测试数据集: 平均损失为: {:.4f}, 正确率为: {}/{} ({:.0f}%)\n'.format(
+    print('\n测试数据集: 平均损失为: {:.4f}, 正确率为: {}/{} ({:.2f}%)\n'.format(
         test_loss, correct, len(data_loader.dataset),
         100. * correct / len(data_loader.dataset)))
