@@ -3,6 +3,7 @@ import torch
 import torch.utils.data as dt
 
 
+# 加载Minst数据集
 def load_data(path='mnist.npz'):
     f = np.load(path)
     x_train, y_train = f['x_train'], f['y_train']

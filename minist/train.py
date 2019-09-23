@@ -10,17 +10,24 @@ class Net(nn.Module):
     def __init__(self):
         super(Net, self).__init__()
         # N C H W
+        # 定义一个卷积层
+        # 输入通道为1 输出为6 卷积核大小为3*3
         self.conv1 = nn.Conv2d(1, 6, 3)
         self.conv2 = nn.Conv2d(6, 16, 3)
 
+        # 把铺平的神经元进行进行全连接
         self.fc1 = nn.Linear(400, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
 
     def forward(self, x):
+        # 使用relu激活 再进行下采样
         x = F.max_pool2d(F.relu(self.conv1(x)), (2, 2))
         x = F.max_pool2d(F.relu(self.conv2(x)), 2)
+        # 铺平 就是flatten
         x = x.view(-1, self.num_flat_features(x))
+
+        # 全连接
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = self.fc3(x)
@@ -43,7 +50,9 @@ if __name__ == '__main__':
     net = Net()
     # 学习率
     learning_rate = 1e-4
+    # 设置损失函数
     criterion = torch.nn.NLLLoss()
+    # 优化器
     optimizer = torch.optim.Adam(net.parameters(), lr=learning_rate)
 
     # 设置为训练模式
